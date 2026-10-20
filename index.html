@@ -1,1 +1,1053 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>room'd | 공간을 쇼핑하다</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Gowun+Batang&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#faf7f2;
+  --white:#fffdf9;
+  --ink:#302821;
+  --muted:#8a7b70;
+  --line:#e8ded4;
+  --rose:#d9b8a8;
+  --sage:#a7aa98;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'DM Sans','Noto Sans KR',sans-serif;
+}
+button,input,select,textarea { font:inherit; }
+button,a { cursor:pointer; }
+button {
+  border:1px solid var(--line);
+  padding:11px 15px;
+  background:var(--white);
+  color:var(--ink);
+  border-radius:8px;
+}
+button:hover { background:#f0e5dc; }
+a { color:inherit; text-decoration:none; }
+header {
+  position:sticky;
+  top:0;
+  z-index:20;
+  min-height:78px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:14px 5%;
+  background:#fffdf9f5;
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(12px);
+}
+.logo {
+  font-family:'Gowun Batang',serif;
+  font-size:29px;
+  letter-spacing:-1px;
+  white-space:nowrap;
+}
+.logo small {
+  display:block;
+  font:9px 'DM Sans',sans-serif;
+  letter-spacing:3px;
+  color:var(--muted);
+}
+nav {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:5px;
+}
+nav button {
+  border:0;
+  background:transparent;
+  font-size:12px;
+  padding:10px 12px;
+}
+nav button.active { background:#eee4db; }
+.header-right { display:flex;gap:7px; }
+.page { display:none; }
+.page.active { display:block; }
+.container { max-width:1200px;margin:auto;padding:42px 24px 70px; }
+.eyebrow {
+  color:#9b7868;
+  font-size:10px;
+  font-weight:bold;
+  letter-spacing:3px;
+}
+h1,h2,h3 { font-family:'Gowun Batang','Noto Sans KR',serif;font-weight:400; }
+h1 { font-size:34px; }
+.page-title {
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:28px;
+}
+.page-title h1 { margin:10px 0; }
+.page-title p { color:var(--muted);font-size:13px; }
+.hero {
+  min-height:350px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:50px;
+  background:#f0e6dd;
+  border-radius:18px;
+  overflow:hidden;
+}
+.hero h1 { font-size:clamp(32px,4vw,52px);line-height:1.5; }
+.hero p { color:#7f6e63;font-size:13px;line-height:2; }
+.hero-art { font-size:clamp(80px,12vw,145px); }
+.primary {
+  background:var(--ink);
+  color:white;
+  border:1px solid var(--ink);
+  border-radius:30px;
+  padding:13px 22px;
+}
+.primary:hover { background:#70584b;color:white; }
+.section-heading {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:40px 0 18px;
+}
+.section-heading h2 { font-size:24px;margin:0; }
+.categories {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+.category {
+  padding:22px;
+  text-align:left;
+  background:var(--white);
+  border:1px solid var(--line);
+}
+.category span { display:block;font-size:30px;margin-bottom:12px; }
+.category strong { display:block;font-weight:500; }
+.category small { display:block;color:var(--muted);margin-top:7px; }
+.products {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:18px;
+}
+.product-card {
+  background:var(--white);
+  border:1px solid var(--line);
+  overflow:hidden;
+  border-radius:12px;
+}
+.product-art {
+  min-height:190px;
+  display:grid;
+  place-items:center;
+  font-size:75px;
+  background:#eee7df;
+}
+.product-art.sofa { background:#eee4b8; }
+.product-art.table { background:#e9e2d9; }
+.product-art.vase { background:#e7e7df; }
+.product-art.candle { background:#f0e1dc; }
+.product-info { padding:16px; }
+.tag {
+  display:inline-block;
+  font-size:10px;
+  color:#8c7060;
+  background:#f2e8e0;
+  padding:5px 9px;
+  border-radius:20px;
+}
+.product-info h3 { font-size:15px;min-height:42px; }
+.product-info p { font-size:12px;color:var(--muted); }
+.product-info button { width:100%;margin-top:6px; }
+.filters { display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px; }
+.filters button.active { background:var(--ink);color:white; }
+.card {
+  background:var(--white);
+  border:1px solid var(--line);
+  padding:24px;
+  border-radius:12px;
+  margin-bottom:18px;
+}
+.card h2 { font-size:21px;margin-top:0; }
+.grid-two { display:grid;grid-template-columns:1fr 1fr;gap:20px; }
+.grid-three { display:grid;grid-template-columns:repeat(3,1fr);gap:12px; }
+.stats { display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:25px 0; }
+.stat {
+  background:var(--white);
+  border:1px solid var(--line);
+  padding:20px;
+}
+.stat small { display:block;color:var(--muted);margin-bottom:12px; }
+.stat strong { font-size:23px;font-weight:500; }
+.menu-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:12px; }
+.menu-item {
+  text-align:left;
+  padding:20px;
+  background:#f5eee7;
+  border:0;
+  min-height:100px;
+}
+.menu-item span { display:block;font-size:24px;margin-bottom:12px; }
+.menu-item strong { display:block;font-size:13px; }
+.muted { color:var(--muted);font-size:13px;line-height:1.8; }
+.empty {
+  text-align:center;
+  padding:50px 15px;
+  background:#f8f2eb;
+  color:var(--muted);
+}
+.empty .emoji { font-size:42px; }
+.form { display:grid;gap:15px; }
+.form label { display:grid;gap:7px;font-size:12px;color:var(--muted); }
+.form input,.form select,.form textarea {
+  width:100%;
+  padding:13px;
+  border:1px solid var(--line);
+  background:white;
+  border-radius:6px;
+}
+.form textarea { min-height:120px;resize:vertical; }
+.form-actions { display:flex;gap:8px;flex-wrap:wrap; }
+.table-wrap { overflow-x:auto; }
+table { width:100%;border-collapse:collapse;font-size:13px; }
+th,td { text-align:left;padding:15px 10px;border-bottom:1px solid var(--line); }
+th { color:var(--muted);font-weight:500;background:#faf5ef; }
+.pill { display:inline-block;padding:6px 10px;background:#f0e5dc;border-radius:20px;font-size:11px; }
+.detail-layout { display:grid;grid-template-columns:1fr 1fr;gap:36px; }
+.detail-image {
+  min-height:420px;
+  display:grid;
+  place-items:center;
+  background:#eee5db;
+  font-size:150px;
+}
+.detail-info h1 { line-height:1.5; }
+.detail-price { font-size:25px;margin:22px 0; }
+.detail-info p { color:var(--muted);font-size:13px;line-height:1.9; }
+.quantity { display:flex;align-items:center;gap:10px;margin:22px 0; }
+.quantity input { width:80px;padding:10px;border:1px solid var(--line); }
+.cart-row {
+  display:grid;
+  grid-template-columns:70px 1fr auto auto;
+  align-items:center;
+  gap:15px;
+  padding:16px 0;
+  border-bottom:1px solid var(--line);
+}
+.cart-thumb {
+  width:70px;height:70px;
+  display:grid;place-items:center;
+  font-size:35px;background:#eee5db;
+}
+.cart-row h3 { font-size:15px;margin:0 0 6px; }
+.cart-row p { color:var(--muted);font-size:12px; }
+.summary {
+  max-width:430px;
+  margin:25px 0 0 auto;
+  padding:22px;
+  background:#f1e7de;
+}
+.summary-line { display:flex;justify-content:space-between;margin:12px 0;font-size:13px; }
+.summary-line.total { border-top:1px solid #d9c7b9;padding-top:15px;font-size:18px; }
+.faq { border-bottom:1px solid var(--line);padding:17px 0; }
+.faq summary { cursor:pointer;font-size:14px; }
+.faq p { font-size:13px;line-height:1.8;color:var(--muted); }
+footer {
+  background:#eee5dc;
+  text-align:center;
+  padding:35px 20px;
+  color:#8b796e;
+  font-size:11px;
+  line-height:2;
+}
+#toast {
+  position:fixed;
+  bottom:24px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--ink);
+  color:white;
+  padding:13px 20px;
+  z-index:100;
+  border-radius:30px;
+  font-size:12px;
+  display:none;
+}
+.room-layout {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 270px;
+  min-height:570px;
+  border:1px solid var(--line);
+}
+.room-scene {
+  position:relative;
+  min-height:570px;
+  background:#e8e7df;
+  overflow:hidden;
+}
+.room-scene canvas { width:100%;height:100%;display:block; }
+.room-tools {
+  position:absolute;
+  top:12px;left:12px;right:12px;
+  display:flex;justify-content:space-between;gap:8px;
+  pointer-events:none;
+}
+.room-tools button { pointer-events:auto; }
+.room-panel { padding:18px;background:var(--white); }
+.room-panel h2 { font-size:19px; }
+@media(max-width:850px) {
+  header { flex-wrap:wrap;gap:10px; }
+  nav { order:3;width:100%;justify-content:flex-start;overflow-x:auto; }
+  nav button { white-space:nowrap; }
+  .header-right { margin-left:auto; }
+  .container { padding:28px 15px 50px; }
+  .hero { padding:25px;min-height:260px; }
+  .hero-art { font-size:75px; }
+  .hero h1 { font-size:30px; }
+  .categories { grid-template-columns:repeat(2,1fr); }
+  .products { grid-template-columns:repeat(2,minmax(0,1fr));gap:10px; }
+  .product-art { min-height:145px;font-size:55px; }
+  .grid-two { grid-template-columns:1fr; }
+  .grid-three { grid-template-columns:1fr; }
+  .stats { grid-template-columns:repeat(2,1fr); }
+  .menu-grid { grid-template-columns:repeat(2,1fr); }
+  .detail-layout { grid-template-columns:1fr; }
+  .detail-image { min-height:280px;font-size:100px; }
+  .room-layout { grid-template-columns:1fr; }
+  .room-scene { min-height:420px; }
+}
+@media(max-width:500px) {
+  .cart-row { grid-template-columns:55px 1fr auto;gap:8px; }
+  .cart-thumb { width:55px;height:55px; }
+  .cart-row .remove { grid-column:2/-1;justify-self:start; }
+  .menu-grid { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
 
+<header>
+  <a href="#" class="logo" onclick="go('homePage');return false;">
+    room'd
+    <small>YOUR SPACE, YOUR STORY</small>
+  </a>
+  <nav>
+    <button class="active" data-page="homePage">홈</button>
+    <button data-page="productPage">상품</button>
+    <button data-page="threePage">3D 공간</button>
+    <button data-page="myPage">마이페이지</button>
+    <button data-page="orderPage">주문·배송</button>
+    <button data-page="supportPage">고객센터</button>
+  </nav>
+  <div class="header-right">
+    <button onclick="go('wishlistPage')">♡ 찜</button>
+    <button onclick="go('cartPage')">장바구니 <span id="cartCount">0</span></button>
+  </div>
+</header>
+
+<!-- 홈 -->
+<section id="homePage" class="page active">
+  <div class="container">
+    <div class="hero">
+      <div>
+        <span class="eyebrow">SPACE & LIFESTYLE</span>
+        <h1>좋아하는 물건으로<br>완성하는 나의 공간</h1>
+        <p>작은 소품 하나부터 공간 전체까지.<br>나만의 취향을 발견하고 직접 배치해 보세요.</p>
+        <button class="primary" onclick="go('productPage')">소품 구경하기 →</button>
+      </div>
+      <div class="hero-art">🪑</div>
+    </div>
+
+    <div class="section-heading">
+      <h2>어떤 공간을 만들고 싶나요?</h2>
+      <span class="muted">FIND YOUR MOOD</span>
+    </div>
+    <div class="categories">
+      <button class="category" onclick="filterProducts('furniture')"><span>🪑</span><strong>가구</strong><small>공간의 중심을 잡는 아이템</small></button>
+      <button class="category" onclick="filterProducts('object')"><span>🏺</span><strong>오브제 · 화병</strong><small>취향을 보여주는 작은 장식</small></button>
+      <button class="category" onclick="filterProducts('mood')"><span>🕯️</span><strong>무드 소품</strong><small>분위기를 완성하는 아이템</small></button>
+      <button class="category" onclick="go('threePage')"><span>🏠</span><strong>3D 공간 배치</strong><small>내 방에 직접 배치해 보기</small></button>
+    </div>
+
+    <div class="section-heading">
+      <h2>ROOM'D 추천 아이템</h2>
+      <button onclick="go('productPage')">전체 상품 보기 →</button>
+    </div>
+    <div id="homeProducts" class="products"></div>
+
+    <div class="section-heading">
+      <h2>공간을 먼저 경험해 보세요</h2>
+    </div>
+    <div class="card grid-two">
+      <div>
+        <span class="eyebrow">3D ROOM SIMULATION</span>
+        <h2>구매하기 전에<br>먼저 배치해 보기</h2>
+        <p class="muted">가구와 오브제를 공간에 배치하면서<br>나만의 인테리어를 상상해 보세요.</p>
+        <button class="primary" onclick="go('threePage')">공간 꾸미기 시작</button>
+      </div>
+      <div style="background:#eee5db;display:grid;place-items:center;min-height:190px;font-size:75px">🛋️ 🪴 🏺</div>
+    </div>
+  </div>
+</section>
+
+<!-- 상품 목록 -->
+<section id="productPage" class="page">
+  <div class="container">
+    <div class="page-title">
+      <div><span class="eyebrow">SHOP COLLECTION</span><h1>상품 둘러보기</h1><p>취향에 맞는 아이템을 찾아보세요.</p></div>
+    </div>
+    <div class="filters">
+      <button class="active" data-filter="all" onclick="filterProducts('all')">전체 상품</button>
+      <button data-filter="furniture" onclick="filterProducts('furniture')">가구</button>
+      <button data-filter="object" onclick="filterProducts('object')">오브제</button>
+      <button data-filter="mood" onclick="filterProducts('mood')">무드 소품</button>
+    </div>
+    <div id="catalogProducts" class="products"></div>
+  </div>
+</section>
+
+<!-- 상품 상세 -->
+<section id="detailPage" class="page">
+  <div class="container">
+    <button onclick="go('productPage')">← 상품 목록으로</button>
+    <div class="detail-layout" style="margin-top:25px">
+      <div class="detail-image" id="detailImage">🏺</div>
+      <div class="detail-info">
+        <span class="eyebrow" id="detailCategory">OBJECT</span>
+        <h1 id="detailName">화이트 링 오브제 화병</h1>
+        <div class="detail-price" id="detailPrice">₩ 28,000</div>
+        <p id="detailDescription">공간에 은은한 포인트를 더하는 인테리어 소품입니다.</p>
+        <div class="quantity">
+          <label for="detailQty">수량</label>
+          <input id="detailQty" type="number" value="1" min="1" max="99">
+        </div>
+        <div class="form-actions">
+          <button onclick="toggleWish(currentProduct)" id="detailWish">♡ 관심 상품</button>
+          <button class="primary" onclick="addCurrentToCart()">장바구니 담기</button>
+        </div>
+        <p class="muted">실제 결제 및 재고 확인은 연결되어 있지 않습니다.</p>
+        <button id="externalLink" onclick="openExternal()">판매처 상품 보기 ↗</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:35px">
+      <h2>상품 안내</h2>
+      <p class="muted">상품의 색상과 크기는 화면과 실제 제품에서 다르게 보일 수 있습니다. 구매 전 판매처의 상세 정보를 확인해 주세요.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3D 공간 -->
+<section id="threePage" class="page">
+  <div class="container">
+    <div class="page-title">
+      <div><span class="eyebrow">ROOM SIMULATION</span><h1>나만의 공간 배치</h1><p>공간을 살펴보고 가구를 선택해 보세요.</p></div>
+      <button onclick="resetRoom()">공간 초기화</button>
+    </div>
+    <div class="room-layout">
+      <div class="room-scene">
+        <canvas id="roomCanvas"></canvas>
+        <div class="room-tools">
+          <button onclick="zoomRoom(0.85)">＋ 확대</button>
+          <button onclick="zoomRoom(1.15)">－ 축소</button>
+        </div>
+      </div>
+      <aside class="room-panel">
+        <h2>공간에 놓아보기</h2>
+        <p class="muted">상품을 선택하면 공간 안의 오브제 위치가 바뀝니다.</p>
+        <div id="roomItems"></div>
+        <div class="card">
+          <strong>사용 방법</strong>
+          <p class="muted">마우스를 드래그해 시점을 바꾸고, 휠로 확대·축소할 수 있어요. 이 화면은 3D 공간 배치 예시입니다.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- 마이페이지 -->
+<section id="myPage" class="page">
+  <div class="container">
+    <div class="page-title">
+      <div><span class="eyebrow">MY ROOM'D</span><h1>마이페이지</h1><p>나의 쇼핑 정보와 관심 상품을 관리해 보세요.</p></div>
+      <button onclick="go('profilePage')">회원 정보 수정</button>
+    </div>
+
+    <div class="card">
+      <div class="grid-two">
+        <div>
+          <span class="eyebrow">WELCOME</span>
+          <h2 id="memberGreeting">반가워요, ROOM'D 고객님</h2>
+          <p class="muted">로그인 화면을 통해 이름을 입력하면 이 화면에 표시됩니다.</p>
+          <form class="form" id="nameForm">
+            <label>이름<input id="memberName" placeholder="이름을 입력해 주세요"></label>
+            <button class="primary" type="submit">이름 설정하기</button>
+          </form>
+        </div>
+        <div style="background:#f4ebe3;padding:25px">
+          <span class="eyebrow">MY BENEFITS</span>
+          <h2>나의 혜택</h2>
+          <div class="stats">
+            <div><small>쿠폰</small><strong>2장</strong></div>
+            <div><small>포인트</small><strong>0P</strong></div>
+          </div>
+          <button onclick="go('couponPage')">쿠폰 확인하기 →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <button class="stat" onclick="go('orderPage')"><small>주문 내역</small><strong>조회 →</strong></button>
+      <button class="stat" onclick="go('wishlistPage')"><small>관심 상품</small><strong id="wishStat">0개 →</strong></button>
+      <button class="stat" onclick="go('cartPage')"><small>장바구니</small><strong id="cartStat">0개 →</strong></button>
+      <button class="stat" onclick="go('returnPage')"><small>취소 · 반품</small><strong>관리 →</strong></button>
+    </div>
+
+    <div class="section-heading"><h2>쇼핑 관리</h2></div>
+    <div class="menu-grid">
+      <button class="menu-item" onclick="go('orderPage')"><span>📦</span><strong>주문·배송 조회</strong><small class="muted">주문 상태 확인</small></button>
+      <button class="menu-item" onclick="go('wishlistPage')"><span>♡</span><strong>관심 상품</strong><small class="muted">찜한 상품 모아보기</small></button>
+      <button class="menu-item" onclick="go('cartPage')"><span>🛍️</span><strong>장바구니</strong><small class="muted">담아둔 상품 확인</small></button>
+      <button class="menu-item" onclick="go('couponPage')"><span>🎟️</span><strong>쿠폰 · 혜택</strong><small class="muted">보유 쿠폰 확인</small></button>
+      <button class="menu-item" onclick="go('returnPage')"><span>↩️</span><strong>취소 · 교환 · 반품</strong><small class="muted">신청 화면 보기</small></button>
+      <button class="menu-item" onclick="go('profilePage')"><span>⚙️</span><strong>회원 정보 수정</strong><small class="muted">개인 정보 관리</small></button>
+      <button class="menu-item" onclick="go('supportPage')"><span>💬</span><strong>1:1 문의</strong><small class="muted">문의 작성하기</small></button>
+    </div>
+  </div>
+</section>
+
+<!-- 장바구니 -->
+<section id="cartPage" class="page">
+  <div class="container">
+    <div class="page-title"><div><span class="eyebrow">YOUR SELECTION</span><h1>장바구니</h1><p>마음에 드는 아이템을 모아보세요.</p></div></div>
+    <div class="card">
+      <div id="cartItems"></div>
+      <div id="cartSummary"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 관심 상품 -->
+<section id="wishlistPage" class="page">
+  <div class="container">
+    <div class="page-title"><div><span class="eyebrow">SAVED ITEMS</span><h1>관심 상품</h1><p>좋아하는 아이템을 저장해 두세요.</p></div></div>
+    <div id="wishlistProducts" class="products"></div>
+  </div>
+</section>
+
+<!-- 주문 배송 -->
+<section id="orderPage" class="page">
+  <div class="container">
+    <div class="page-title"><div><span class="eyebrow">ORDER & DELIVERY</span><h1>주문·배송 조회</h1><p>주문 내역과 배송 상태를 확인하는 화면입니다.</p></div></div>
+    <div class="stats">
+      <div class="stat"><small>입금 대기</small><strong>0</strong></div>
+      <div class="stat"><small>배송 준비</small><strong>0</strong></div>
+      <div class="stat"><small>배송 중</small><strong>0</strong></div>
+      <div class="stat"><small>배송 완료</small><strong>0</strong></div>
+    </div>
+    <div class="card">
+      <h2>최근 주문 내역</h2>
+      <div class="empty"><div class="emoji">📦</div><h2>아직 주문 내역이 없어요</h2><p>상품을 둘러보고 마음에 드는 아이템을 찾아보세요.</p><button class="primary" onclick="go('productPage')">상품 구경하기</button></div>
+      <p class="muted">실제 주문 시스템과 연결되어 있지 않은 시연용 화면입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 쿠폰 -->
+<section id="couponPage" class="page">
+  <div class="container">
+    <div class="page-title"><div><span class="eyebrow">MY BENEFITS</span><h1>쿠폰 · 혜택</h1><p>보유 쿠폰과 혜택을 확인해 보세요.</p></div></div>
+    <div class="grid-two">
+      <div class="card" style="background:#f0e5dc">
+        <span class="eyebrow">WELCOME COUPON</span>
+        <h2>첫 구매 할인 쿠폰</h2>
+        <p class="muted">구매 금액 조건 및 사용 기간은 판매처에서 확인해 주세요.</p>
+        <span class="pill">시연용 쿠폰</span>
+      </div>
+      <div class="card">
+        <span class="eyebrow">ROOM'D BENEFIT</span>
+        <h2>나의 포인트</h2>
+        <p class="muted">현재 포인트가 없습니다.</p>
+        <strong style="font-size:28px">0 P</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 취소 반품 -->
+<section id="returnPage" class="page">
+  <div class="container">
+    <div class="page-title"><div><span class="eyebrow">CANCEL & RETURN</span><h1>취소 · 교환 · 반품</h1><p>신청 전 판매처의 교환 및 반품 정책을 확인해 주세요.</p></div></div>
+    <div class="card">
+      <h2>신청 안내</h2>
+      <div class="grid-three">
+        <div><span class="eyebrow">01</span><h3>주문 확인</h3><p class="muted">주문 번호와 상품 정보를 확인합니다.</p></div>
+        <div><span class="eyebrow">02</span><h3>신청 내용 작성</h3><p class="muted">신청 유형과 사유를 입력합니다.</p></div>
+        <div><span class="eyebrow">03</span><h3>판매처 확인</h3><p class="muted">실제 처리는 판매처를 통해 진행합니다.</p></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>신청서 작성</h2>
+      <form class="form" id="returnForm">
+        <label>신청 유형
+          <select required><option value="">선택해 주세요</option><option>주문 취소</option><option>교환 신청</option><option>반품 신청</option></select>
+        </label>
+        <label>상품명<input required placeholder="상품명을 입력해 주세요"></label>
+        <label>신청 사유<textarea required placeholder="신청 사유를 작성해 주세요"></textarea></label>
+        <button class="primary">신청 내용 확인</button>
+      </form>
+      <p class="muted">데모 화면이며 신청 정보는 서버로 전송되지 않습니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 회원 정보 -->
+<section id="profilePage" class="page">
+  <div class="container">
+    <div class="page-title"><div><span class="eyebrow">ACCOUNT SETTINGS</span><h1>회원 정보 수정</h1><p>회원 정보 입력 화면입니다.</p></div></div>
+    <div class="card" style="max-width:700px">
+      <form class="form" id="profileForm">
+        <label>이름<input id="profileName" placeholder="이름"></label>
+        <label>이메일<input type="email" placeholder="example@email.com"></label>
+        <label>연락처<input type="tel" placeholder="010-0000-0000"></label>
+        <label>배송지<input placeholder="주소를 입력해 주세요"></label>
+        <label>상세 주소<input placeholder="상세 주소"></label>
+        <div class="form-actions">
+          <button class="primary">변경 내용 확인</button>
+          <button type="button" onclick="go('myPage')">취소</button>
+        </div>
+      </form>
+      <p class="muted">실제 회원 정보는 저장되지 않습니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 고객센터 -->
+<section id="supportPage" class="page">
+  <div class="container">
+    <div class="page-title"><div><span class="eyebrow">HELP & SUPPORT</span><h1>고객센터</h1><p>쇼핑 중 궁금한 내용을 확인해 보세요.</p></div></div>
+    <div class="card">
+      <h2>자주 묻는 질문</h2>
+      <details class="faq"><summary>배송 기간은 얼마나 걸리나요?</summary><p>상품별 배송 기간이 다를 수 있습니다. 실제 판매처의 배송 안내를 확인해 주세요.</p></details>
+      <details class="faq"><summary>교환 및 반품은 어떻게 하나요?</summary><p>판매처의 교환·반품 정책과 신청 가능 기간을 먼저 확인해 주세요.</p></details>
+      <details class="faq"><summary>상품을 미리 배치해 볼 수 있나요?</summary><p>상단 메뉴의 3D 공간 페이지에서 공간 배치 예시를 확인할 수 있습니다.</p></details>
+      <details class="faq"><summary>실제 결제도 가능한가요?</summary><p>이 웹페이지는 포트폴리오용 데모로, 실제 결제는 지원하지 않습니다.</p></details>
+    </div>
+    <div class="card">
+      <h2>1:1 문의</h2>
+      <form class="form" id="supportForm">
+        <label>문의 유형<select><option>상품 문의</option><option>배송 문의</option><option>교환 · 반품</option><option>기타</option></select></label>
+        <label>이메일<input type="email" placeholder="답변 받을 이메일"></label>
+        <label>문의 내용<textarea required placeholder="궁금한 내용을 입력해 주세요."></textarea></label>
+        <button class="primary">문의 내용 확인</button>
+      </form>
+      <p class="muted">문의 내용은 화면에서 확인하는 데모이며 실제로 전송되지 않습니다.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <strong>room'd</strong><br>
+  YOUR SPACE, YOUR STORY<br>
+  공간을 쇼핑하다 · 인테리어 소품 쇼핑 플랫폼<br>
+  <span>본 페이지는 포트폴리오 및 UI 시연용입니다.</span>
+</footer>
+<div id="toast"></div>
+
+<script>
+const products = {
+  sofa:{
+    id:'sofa',name:'옐로우 빈백 소파',category:'furniture',
+    label:'FURNITURE',price:89000,icon:'🛋️',art:'sofa',
+    desc:'포근한 패브릭과 따뜻한 컬러로 공간에 포인트를 더하는 빈백 소파입니다.',
+    url:'https://domemall.kr/product/detail.html?product_no=441085&cate_no=27702&display_group=1'
+  },
+  table:{
+    id:'table',name:'내추럴 거실 좌탁',category:'furniture',
+    label:'FURNITURE',price:129000,icon:'▱',art:'table',
+    desc:'내추럴한 우드 톤으로 다양한 인테리어에 어울리는 거실 좌탁입니다.',
+    url:'https://domemall.kr/product/detail.html?product_no=441102&cate_no=27704&display_group=1'
+  },
+  vase:{
+    id:'vase',name:'화이트 링 오브제 화병',category:'object',
+    label:'OBJECT',price:28000,icon:'🏺',art:'vase',
+    desc:'조형적인 실루엣으로 선반이나 테이블 위에 은은한 포인트를 더합니다.',
+    url:'https://domemall.kr/product/detail.html?product_no=448804&cate_no=26029&display_group=1'
+  },
+  candle:{
+    id:'candle',name:'캔들 · 무드 소품',category:'mood',
+    label:'MOOD',price:19000,icon:'🕯️',art:'candle',
+    desc:'차분한 분위기의 공간을 완성하는 무드 소품입니다.',
+    url:'https://domemall.kr/product/detail.html?product_no=449770&cate_no=26072&display_group=1'
+  }
+};
+
+let cart = [];
+let wishlist = [];
+let currentProduct = 'vase';
+let memberName = '';
+
+const money = n => '₩ ' + Number(n).toLocaleString('ko-KR');
+
+function toast(message) {
+  const el = document.getElementById('toast');
+  el.textContent = message;
+  el.style.display = 'block';
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(() => el.style.display='none',2300);
+}
+
+function go(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const page = document.getElementById(id);
+  if(page) page.classList.add('active');
+
+  document.querySelectorAll('nav [data-page]').forEach(b=>{
+    b.classList.toggle('active',b.dataset.page===id);
+  });
+
+  if(id==='cartPage') renderCart();
+  if(id==='wishlistPage') renderWishlist();
+  if(id==='threePage') setTimeout(drawRoom,100);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.querySelectorAll('nav [data-page]').forEach(btn=>{
+  btn.addEventListener('click',()=>go(btn.dataset.page));
+});
+
+function productCard(p) {
+  return `
+    <article class="product-card">
+      <div class="product-art ${p.art}">${p.icon}</div>
+      <div class="product-info">
+        <span class="tag">${p.label}</span>
+        <h3>${p.name}</h3>
+        <p>${money(p.price)}</p>
+        <button onclick="openDetail('${p.id}')">상품 상세 보기</button>
+        <button onclick="addCart('${p.id}')">장바구니 담기</button>
+      </div>
+    </article>`;
+}
+
+function renderProducts() {
+  const html = Object.values(products).map(productCard).join('');
+  document.getElementById('homeProducts').innerHTML = html;
+  document.getElementById('catalogProducts').innerHTML = html;
+}
+
+function filterProducts(category) {
+  go('productPage');
+  document.querySelectorAll('[data-filter]').forEach(b=>{
+    b.classList.toggle('active',b.dataset.filter===category);
+  });
+  document.querySelectorAll('#catalogProducts .product-card').forEach(card=>{
+    const name = card.querySelector('h3').textContent;
+    const p = Object.values(products).find(x=>x.name===name);
+    card.style.display = category==='all'||p.category===category?'':'none';
+  });
+}
+
+function openDetail(id) {
+  const p = products[id];
+  if(!p) return;
+  currentProduct=id;
+  document.getElementById('detailImage').textContent=p.icon;
+  document.getElementById('detailName').textContent=p.name;
+  document.getElementById('detailCategory').textContent=p.label;
+  document.getElementById('detailPrice').textContent=money(p.price);
+  document.getElementById('detailDescription').textContent=p.desc;
+  document.getElementById('detailQty').value=1;
+  document.getElementById('detailWish').textContent=wishlist.includes(id)?'♥ 관심 상품 저장됨':'♡ 관심 상품';
+  go('detailPage');
+}
+
+function openExternal() {
+  const p=products[currentProduct];
+  if(p) window.open(p.url,'_blank','noopener');
+}
+
+function addCart(id,qty=1) {
+  const existing=cart.find(x=>x.id===id);
+  if(existing) existing.qty+=qty;
+  else cart.push({id,qty});
+  updateCounts();
+  toast('장바구니에 담았어요.');
+}
+
+function addCurrentToCart() {
+  const qty=Math.max(1,Math.min(99,parseInt(document.getElementById('detailQty').value)||1));
+  addCart(currentProduct,qty);
+  go('cartPage');
+}
+
+function updateCounts() {
+  const count=cart.reduce((sum,x)=>sum+x.qty,0);
+  document.getElementById('cartCount').textContent=count;
+  document.getElementById('cartStat').textContent=count+'개 →';
+  document.getElementById('wishStat').textContent=wishlist.length+'개 →';
+}
+
+function renderCart() {
+  const root=document.getElementById('cartItems');
+  const summary=document.getElementById('cartSummary');
+
+  if(!cart.length) {
+    root.innerHTML=`<div class="empty"><div class="emoji">🛍️</div><h2>장바구니가 비어 있어요</h2><p>마음에 드는 아이템을 담아보세요.</p><button class="primary" onclick="go('productPage')">상품 구경하기</button></div>`;
+    summary.innerHTML='';
+    return;
+  }
+
+  root.innerHTML=cart.map(item=>{
+    const p=products[item.id];
+    return `<div class="cart-row">
+      <div class="cart-thumb">${p.icon}</div>
+      <div><h3>${p.name}</h3><p>${money(p.price)}</p></div>
+      <div class="quantity">
+        <button onclick="changeQty('${p.id}',-1)">−</button>
+        <span>${item.qty}</span>
+        <button onclick="changeQty('${p.id}',1)">＋</button>
+      </div>
+      <button class="remove" onclick="removeCart('${p.id}')">삭제</button>
+    </div>`;
+  }).join('');
+
+  const total=cart.reduce((sum,item)=>sum+products[item.id].price*item.qty,0);
+  summary.innerHTML=`<div class="summary">
+    <div class="summary-line"><span>상품 금액</span><strong>${money(total)}</strong></div>
+    <div class="summary-line"><span>배송비</span><span>판매처 기준</span></div>
+    <div class="summary-line total"><span>예상 결제 금액</span><strong>${money(total)}</strong></div>
+    <button class="primary" style="width:100%" onclick="checkoutDemo()">주문 진행하기</button>
+    <p class="muted">실제 결제는 연결되어 있지 않습니다.</p>
+  </div>`;
+}
+
+function changeQty(id,delta) {
+  const item=cart.find(x=>x.id===id);
+  if(!item) return;
+  item.qty=Math.max(1,item.qty+delta);
+  updateCounts();
+  renderCart();
+}
+
+function removeCart(id) {
+  cart=cart.filter(x=>x.id!==id);
+  updateCounts();
+  renderCart();
+  toast('상품을 삭제했어요.');
+}
+
+function checkoutDemo() {
+  toast('데모 화면입니다. 실제 주문은 진행되지 않았어요.');
+}
+
+function toggleWish(id) {
+  if(wishlist.includes(id)) {
+    wishlist=wishlist.filter(x=>x!==id);
+    toast('관심 상품에서 해제했어요.');
+  } else {
+    wishlist.push(id);
+    toast('관심 상품에 저장했어요.');
+  }
+  updateCounts();
+  document.getElementById('detailWish').textContent=wishlist.includes(id)?'♥ 관심 상품 저장됨':'♡ 관심 상품';
+  renderWishlist();
+}
+
+function renderWishlist() {
+  const root=document.getElementById('wishlistProducts');
+  if(!wishlist.length) {
+    root.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="emoji">♡</div><h2>아직 찜한 상품이 없어요</h2><p>상품 상세 화면에서 관심 상품을 저장해 보세요.</p><button class="primary" onclick="go('productPage')">상품 둘러보기</button></div>`;
+    return;
+  }
+  root.innerHTML=wishlist.map(id=>{
+    const p=products[id];
+    return `<article class="product-card">
+      <div class="product-art ${p.art}">${p.icon}</div>
+      <div class="product-info">
+        <span class="tag">${p.label}</span>
+        <h3>${p.name}</h3><p>${money(p.price)}</p>
+        <button onclick="openDetail('${id}')">상품 상세</button>
+        <button onclick="toggleWish('${id}')">찜 해제</button>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+document.getElementById('detailWish').addEventListener('click',()=>toggleWish(currentProduct));
+
+document.getElementById('nameForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  memberName=document.getElementById('memberName').value.trim();
+  if(!memberName) return toast('이름을 입력해 주세요.');
+  document.getElementById('memberGreeting').textContent='반가워요, '+memberName+'님';
+  document.getElementById('profileName').value=memberName;
+  toast('이름이 화면에 반영되었어요.');
+});
+
+document.getElementById('profileForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const name=document.getElementById('profileName').value.trim();
+  if(name) {
+    memberName=name;
+    document.getElementById('memberGreeting').textContent='반가워요, '+memberName+'님';
+  }
+  toast('데모 화면입니다. 실제 계정에는 저장되지 않습니다.');
+});
+
+document.getElementById('returnForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  toast('신청 내용을 확인했어요. 실제 접수는 되지 않았습니다.');
+});
+
+document.getElementById('supportForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  toast('문의 내용을 확인했어요. 실제 전송은 되지 않았습니다.');
+  e.target.reset();
+});
+
+/* 간단한 공간 배치 시각화 */
+const roomCanvas=document.getElementById('roomCanvas');
+const roomCtx=roomCanvas.getContext('2d');
+let roomAngle=0;
+let roomZoom=1;
+let selectedFurniture='sofa';
+
+function drawRoom() {
+  if(!roomCanvas || !roomCtx) return;
+  const rect=roomCanvas.getBoundingClientRect();
+  if(!rect.width || !rect.height) return;
+
+  roomCanvas.width=rect.width*devicePixelRatio;
+  roomCanvas.height=rect.height*devicePixelRatio;
+  roomCtx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+
+  const w=rect.width,h=rect.height;
+  roomCtx.clearRect(0,0,w,h);
+  roomCtx.fillStyle='#e8e7df';
+  roomCtx.fillRect(0,0,w,h);
+
+  const cx=w/2,cy=h*.57;
+  const scale=Math.min(w,h)*.07*roomZoom;
+
+  roomCtx.save();
+  roomCtx.translate(cx,cy);
+  roomCtx.rotate(roomAngle*.12);
+
+  /* 바닥 */
+  roomCtx.fillStyle='#d8c7b5';
+  roomCtx.beginPath();
+  roomCtx.moveTo(-scale*4,-scale*1.5);
+  roomCtx.lineTo(scale*4,-scale*1.5);
+  roomCtx.lineTo(scale*6,scale*2.8);
+  roomCtx.lineTo(-scale*6,scale*2.8);
+  roomCtx.closePath();
+  roomCtx.fill();
+
+  /* 뒷벽 */
+  roomCtx.fillStyle='#f7f1e9';
+  roomCtx.fillRect(-scale*4,-scale*4,scale*8,scale*2.5);
+
+  /* 벽 장식 */
+  roomCtx.strokeStyle='#cbb8a7';
+  roomCtx.lineWidth=2;
+  roomCtx.strokeRect(-scale*1.5,-scale*3.5,scale,scale*.8);
+  roomCtx.strokeRect(scale*.4,-scale*3.5,scale,scale*.8);
+
+  /* 테이블 */
+  roomCtx.fillStyle='#b69b7b';
+  roomCtx.fillRect(-scale*.7,scale*.25,scale*1.8,scale*.9);
+  roomCtx.fillStyle='#d1b89a';
+  roomCtx.fillRect(-scale*.85,scale*.1,scale*2.1,scale*.18);
+
+  /* 소파 */
+  roomCtx.fillStyle='#d9c18a';
+  roomCtx.fillRect(-scale*3,scale*.15,scale*1.5,scale*1.15);
+  roomCtx.fillStyle='#ead9ad';
+  roomCtx.fillRect(-scale*3.1,scale*.05,scale*1.65,scale*.25);
+
+  /* 화병 */
+  roomCtx.fillStyle='#a9afa0';
+  roomCtx.beginPath();
+  roomCtx.ellipse(scale*1.7,scale*.05,scale*.28,scale*.36,0,0,Math.PI*2);
+  roomCtx.fill();
+  roomCtx.fillStyle='#7f9277';
+  roomCtx.fillRect(scale*1.68,-scale*.65,scale*.04,scale*.7);
+  roomCtx.fillRect(scale*1.35,-scale*.4,scale*.35,scale*.04);
+  roomCtx.fillRect(scale*1.7,-scale*.5,scale*.3,scale*.04);
+
+  /* 빈백 */
+  roomCtx.fillStyle='#d9c67c';
+  roomCtx.beginPath();
+  roomCtx.ellipse(-scale*1.7,scale*1.7,scale*.65,scale*.48,-.15,0,Math.PI*2);
+  roomCtx.fill();
+
+  roomCtx.restore();
+
+  roomCtx.fillStyle='#66594f';
+  roomCtx.font='12px sans-serif';
+  roomCtx.fillText('ROOM SIMULATION',14,24);
+  roomCtx.fillStyle='#81766e';
+  roomCtx.font='11px sans-serif';
+  roomCtx.fillText('시점을 바꾸거나 확대해서 공간을 살펴보세요.',14,42);
+}
+
+function zoomRoom(amount) {
+  roomZoom=Math.max(.65,Math.min(1.7,roomZoom*amount));
+  drawRoom();
+}
+
+function resetRoom() {
+  roomAngle=0;
+  roomZoom=1;
+  drawRoom();
+  toast('공간을 초기화했어요.');
+}
+
+roomCanvas.addEventListener('pointerdown',e=>{
+  roomCanvas.setPointerCapture(e.pointerId);
+  roomCanvas.dataset.lastX=e.clientX;
+  roomCanvas.dataset.dragging='true';
+});
+roomCanvas.addEventListener('pointermove',e=>{
+  if(roomCanvas.dataset.dragging!=='true') return;
+  const dx=e.clientX-Number(roomCanvas.dataset.lastX||e.clientX);
+  roomAngle+=dx*.01;
+  roomCanvas.dataset.lastX=e.clientX;
+  drawRoom();
+});
+roomCanvas.addEventListener('pointerup',()=>roomCanvas.dataset.dragging='false');
+roomCanvas.addEventListener('pointercancel',()=>roomCanvas.dataset.dragging='false');
+roomCanvas.addEventListener('wheel',e=>{
+  e.preventDefault();
+  zoomRoom(e.deltaY<0?1.06:.94);
+},{passive:false});
+
+document.getElementById('roomItems').innerHTML=Object.values(products).map(p=>`
+  <div style="display:flex;gap:10px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)">
+    <div style="font-size:28px">${p.icon}</div>
+    <div style="flex:1"><strong style="font-size:12px">${p.name}</strong><p class="muted">${money(p.price)}</p></div>
+    <button onclick="selectedFurniture='${p.id}';toast('${p.name} 선택');">선택</button>
+  </div>
+`).join('');
+
+renderProducts();
+renderCart();
+renderWishlist();
+updateCounts();
+drawRoom();
+window.addEventListener('resize',drawRoom);
+</script>
+</body>
+</html>
