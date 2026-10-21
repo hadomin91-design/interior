@@ -285,28 +285,6 @@ footer {
   font-size:12px;
   display:none;
 }
-.room-layout {
-  display:grid;
-  grid-template-columns:minmax(0,1fr) 270px;
-  min-height:570px;
-  border:1px solid var(--line);
-}
-.room-scene {
-  position:relative;
-  min-height:570px;
-  background:#e8e7df;
-  overflow:hidden;
-}
-.room-scene canvas { width:100%;height:100%;display:block; }
-.room-tools {
-  position:absolute;
-  top:12px;left:12px;right:12px;
-  display:flex;justify-content:space-between;gap:8px;
-  pointer-events:none;
-}
-.room-tools button { pointer-events:auto; }
-.room-panel { padding:18px;background:var(--white); }
-.room-panel h2 { font-size:19px; }
 @media(max-width:850px) {
   header { flex-wrap:wrap;gap:10px; }
   nav { order:3;width:100%;justify-content:flex-start;overflow-x:auto; }
@@ -325,8 +303,6 @@ footer {
   .menu-grid { grid-template-columns:repeat(2,1fr); }
   .detail-layout { grid-template-columns:1fr; }
   .detail-image { min-height:280px;font-size:100px; }
-  .room-layout { grid-template-columns:1fr; }
-  .room-scene { min-height:420px; }
 }
 @media(max-width:500px) {
   .cart-row { grid-template-columns:55px 1fr auto;gap:8px; }
@@ -334,6 +310,36 @@ footer {
   .cart-row .remove { grid-column:2/-1;justify-self:start; }
   .menu-grid { grid-template-columns:1fr 1fr; }
 }
+
+/* ===== 3D 공간: 화면을 꽉 채우는 three.js 레이아웃 ===== */
+#threePage .t3-layout{height:calc(100vh - 78px);min-height:560px;display:grid;grid-template-columns:minmax(0,1fr) 300px;background:var(--bg)}
+#threePage .t3-viewport{position:relative;min-width:0;overflow:hidden;background:#e8e7df}
+#threePage .t3-viewport canvas{width:100%;height:100%;display:block;touch-action:none}
+#threePage .t3-title{position:absolute;top:16px;left:20px;pointer-events:none}
+#threePage .t3-title h1{font-family:'Gowun Batang',serif;font-weight:400;font-size:20px;margin:0 0 5px}
+#threePage .t3-title p{font-size:12px;color:var(--muted);margin:0}
+#threePage .t3-toolbar{position:absolute;right:12px;top:12px;display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+#threePage .t3-toolbar button{padding:9px 12px;font-size:12px}
+#threePage .t3-tip,#threePage .t3-status{position:absolute;bottom:12px;background:#fffdf9dc;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:11px;line-height:1.6;color:#6d6259;pointer-events:none}
+#threePage .t3-tip{left:12px}
+#threePage .t3-status{right:12px}
+#threePage .t3-aside{padding:18px 16px;background:var(--white);border-left:1px solid var(--line);overflow:auto}
+#threePage .t3-aside h2{font-family:'Gowun Batang',serif;font-weight:400;font-size:18px;margin:0 0 8px}
+#threePage .t3-aside>p{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 6px}
+#threePage .t3-item{display:grid;grid-template-columns:55px 1fr;gap:10px;align-items:center;padding:13px 0;border-top:1px solid var(--line)}
+#threePage .t3-icon{height:55px;border-radius:8px;background:#f1ebe4;display:grid;place-items:center;font-size:25px}
+#threePage .t3-item h3{font-size:13px;margin:0 0 4px;font-weight:600}
+#threePage .t3-item p{font-size:11px;color:var(--muted);margin:0 0 8px}
+#threePage .t3-item button{font-size:11px;padding:7px 10px}
+#threePage .t3-rotate{margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:10px;background:#faf6f0}
+#threePage .t3-rotate h3{font-size:13px;margin:0 0 7px}
+#threePage .t3-rotate p{font-size:11px;color:var(--muted);margin:0 0 10px;line-height:1.6}
+#threePage .t3-rotate-actions{display:flex;gap:6px;margin-bottom:10px}
+#threePage .t3-rotate-actions button{flex:1;padding:8px 5px;font-size:12px}
+#threePage .t3-rotate input[type=range]{width:100%;accent-color:#b08c7b}
+#threePage .t3-rotate-value{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:5px}
+#threePage .t3-note{font-size:11px;line-height:1.6;background:#f2eee7;border-radius:8px;padding:10px;color:#75685f}
+@media(max-width:850px){#threePage .t3-layout{height:auto;min-height:calc(100vh - 78px);grid-template-columns:1fr;grid-template-rows:65vh auto}#threePage .t3-viewport{min-height:400px}#threePage .t3-aside{border-left:0;border-top:1px solid var(--line)}#threePage .t3-title,#threePage .t3-tip{display:none}#threePage .t3-toolbar{left:10px;right:10px;justify-content:flex-start}#threePage .t3-toolbar button{padding:8px 10px;font-size:11px}}
 </style>
 </head>
 <body>
@@ -450,29 +456,23 @@ footer {
 
 <!-- 3D 공간 -->
 <section id="threePage" class="page">
-  <div class="container">
-    <div class="page-title">
-      <div><span class="eyebrow">ROOM SIMULATION</span><h1>나만의 공간 배치</h1><p>공간을 살펴보고 가구를 선택해 보세요.</p></div>
-      <button onclick="resetRoom()">공간 초기화</button>
-    </div>
-    <div class="room-layout">
-      <div class="room-scene">
-        <canvas id="roomCanvas"></canvas>
-        <div class="room-tools">
-          <button onclick="zoomRoom(0.85)">＋ 확대</button>
-          <button onclick="zoomRoom(1.15)">－ 축소</button>
-        </div>
-      </div>
-      <aside class="room-panel">
-        <h2>공간에 놓아보기</h2>
-        <p class="muted">상품을 선택하면 공간 안의 오브제 위치가 바뀝니다.</p>
-        <div id="roomItems"></div>
-        <div class="card">
-          <strong>사용 방법</strong>
-          <p class="muted">마우스를 드래그해 시점을 바꾸고, 휠로 확대·축소할 수 있어요. 이 화면은 3D 공간 배치 예시입니다.</p>
-        </div>
-      </aside>
-    </div>
+  <div class="t3-layout">
+    <section class="t3-viewport">
+      <canvas id="view"></canvas>
+      <div class="t3-title"><h1>나만의 3D 공간 배치</h1><p>3D 공간에서 가구를 직접 이동해 보세요.</p></div>
+      <div class="t3-toolbar"><button id="home">기본 시점</button><button id="zin">＋ 확대</button><button id="zout">－ 축소</button><button id="reset">배치 초기화</button></div>
+      <div class="t3-tip">빈 곳 드래그: 시점 회전 · 휠: 확대/축소<br>가구 드래그: 바닥 위 이동 · 더블클릭: 상품 상세</div>
+      <div class="t3-status" id="status">3D 장면 준비 중…</div>
+    </section>
+    <aside class="t3-aside">
+      <h2>공간에 놓인 소품</h2>
+      <p>가구를 3D 공간 안에서 이동하고 상품 상세를 열어볼 수 있어요.</p>
+      <div class="t3-item"><div class="t3-icon">🏺</div><div><h3>화이트 링 오브제 화병</h3><p>작아진 미니 사이즈 · 꽃 장식 포함</p><button data-product="vase">상품 보러 가기 →</button></div></div>
+      <div class="t3-item"><div class="t3-icon">▱</div><div><h3>내추럴 거실 좌탁</h3><p>공간에 포인트</p><button data-product="table">상품 보러 가기 →</button></div></div>
+      <div class="t3-item"><div class="t3-icon" style="color:#d5b52c">🛋️</div><div><h3>옐로우 빈백 소파</h3><p>노란색 패브릭 빈백 체어</p><button data-product="beanbag">상품 보러 가기 →</button></div></div>
+      <div class="t3-rotate"><h3>선택한 상품 회전</h3><p id="rotateHint">먼저 3D 화면에서 거실 좌탁·화병·빈백을 클릭하세요.</p><div class="t3-rotate-actions"><button id="rotLeft" type="button">↶ −15°</button><button id="rotRight" type="button">+15° ↷</button></div><input id="rotationSlider" type="range" min="0" max="359" step="1" value="0" aria-label="상품 회전 각도"><div class="t3-rotate-value"><span>0°</span><strong id="rotationValue">0°</strong><span>360°</span></div></div>
+      <div class="t3-note">상품을 선택한 뒤 버튼이나 슬라이더로 원하는 방향까지 360° 회전할 수 있어요. 빈 곳을 드래그하면 카메라 시점도 회전합니다.</div>
+    </aside>
   </div>
 </section>
 
@@ -719,7 +719,7 @@ function go(id) {
 
   if(id==='cartPage') renderCart();
   if(id==='wishlistPage') renderWishlist();
-  if(id==='threePage') setTimeout(drawRoom,100);
+  if(id==='threePage') setTimeout(()=>window.dispatchEvent(new Event('resize')),100);
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -917,137 +917,122 @@ document.getElementById('supportForm').addEventListener('submit',e=>{
   e.target.reset();
 });
 
-/* 간단한 공간 배치 시각화 */
-const roomCanvas=document.getElementById('roomCanvas');
-const roomCtx=roomCanvas.getContext('2d');
-let roomAngle=0;
-let roomZoom=1;
-let selectedFurniture='sofa';
-
-function drawRoom() {
-  if(!roomCanvas || !roomCtx) return;
-  const rect=roomCanvas.getBoundingClientRect();
-  if(!rect.width || !rect.height) return;
-
-  roomCanvas.width=rect.width*devicePixelRatio;
-  roomCanvas.height=rect.height*devicePixelRatio;
-  roomCtx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-
-  const w=rect.width,h=rect.height;
-  roomCtx.clearRect(0,0,w,h);
-  roomCtx.fillStyle='#e8e7df';
-  roomCtx.fillRect(0,0,w,h);
-
-  const cx=w/2,cy=h*.57;
-  const scale=Math.min(w,h)*.07*roomZoom;
-
-  roomCtx.save();
-  roomCtx.translate(cx,cy);
-  roomCtx.rotate(roomAngle*.12);
-
-  /* 바닥 */
-  roomCtx.fillStyle='#d8c7b5';
-  roomCtx.beginPath();
-  roomCtx.moveTo(-scale*4,-scale*1.5);
-  roomCtx.lineTo(scale*4,-scale*1.5);
-  roomCtx.lineTo(scale*6,scale*2.8);
-  roomCtx.lineTo(-scale*6,scale*2.8);
-  roomCtx.closePath();
-  roomCtx.fill();
-
-  /* 뒷벽 */
-  roomCtx.fillStyle='#f7f1e9';
-  roomCtx.fillRect(-scale*4,-scale*4,scale*8,scale*2.5);
-
-  /* 벽 장식 */
-  roomCtx.strokeStyle='#cbb8a7';
-  roomCtx.lineWidth=2;
-  roomCtx.strokeRect(-scale*1.5,-scale*3.5,scale,scale*.8);
-  roomCtx.strokeRect(scale*.4,-scale*3.5,scale,scale*.8);
-
-  /* 테이블 */
-  roomCtx.fillStyle='#b69b7b';
-  roomCtx.fillRect(-scale*.7,scale*.25,scale*1.8,scale*.9);
-  roomCtx.fillStyle='#d1b89a';
-  roomCtx.fillRect(-scale*.85,scale*.1,scale*2.1,scale*.18);
-
-  /* 소파 */
-  roomCtx.fillStyle='#d9c18a';
-  roomCtx.fillRect(-scale*3,scale*.15,scale*1.5,scale*1.15);
-  roomCtx.fillStyle='#ead9ad';
-  roomCtx.fillRect(-scale*3.1,scale*.05,scale*1.65,scale*.25);
-
-  /* 화병 */
-  roomCtx.fillStyle='#a9afa0';
-  roomCtx.beginPath();
-  roomCtx.ellipse(scale*1.7,scale*.05,scale*.28,scale*.36,0,0,Math.PI*2);
-  roomCtx.fill();
-  roomCtx.fillStyle='#7f9277';
-  roomCtx.fillRect(scale*1.68,-scale*.65,scale*.04,scale*.7);
-  roomCtx.fillRect(scale*1.35,-scale*.4,scale*.35,scale*.04);
-  roomCtx.fillRect(scale*1.7,-scale*.5,scale*.3,scale*.04);
-
-  /* 빈백 */
-  roomCtx.fillStyle='#d9c67c';
-  roomCtx.beginPath();
-  roomCtx.ellipse(-scale*1.7,scale*1.7,scale*.65,scale*.48,-.15,0,Math.PI*2);
-  roomCtx.fill();
-
-  roomCtx.restore();
-
-  roomCtx.fillStyle='#66594f';
-  roomCtx.font='12px sans-serif';
-  roomCtx.fillText('ROOM SIMULATION',14,24);
-  roomCtx.fillStyle='#81766e';
-  roomCtx.font='11px sans-serif';
-  roomCtx.fillText('시점을 바꾸거나 확대해서 공간을 살펴보세요.',14,42);
-}
-
-function zoomRoom(amount) {
-  roomZoom=Math.max(.65,Math.min(1.7,roomZoom*amount));
-  drawRoom();
-}
-
-function resetRoom() {
-  roomAngle=0;
-  roomZoom=1;
-  drawRoom();
-  toast('공간을 초기화했어요.');
-}
-
-roomCanvas.addEventListener('pointerdown',e=>{
-  roomCanvas.setPointerCapture(e.pointerId);
-  roomCanvas.dataset.lastX=e.clientX;
-  roomCanvas.dataset.dragging='true';
-});
-roomCanvas.addEventListener('pointermove',e=>{
-  if(roomCanvas.dataset.dragging!=='true') return;
-  const dx=e.clientX-Number(roomCanvas.dataset.lastX||e.clientX);
-  roomAngle+=dx*.01;
-  roomCanvas.dataset.lastX=e.clientX;
-  drawRoom();
-});
-roomCanvas.addEventListener('pointerup',()=>roomCanvas.dataset.dragging='false');
-roomCanvas.addEventListener('pointercancel',()=>roomCanvas.dataset.dragging='false');
-roomCanvas.addEventListener('wheel',e=>{
-  e.preventDefault();
-  zoomRoom(e.deltaY<0?1.06:.94);
-},{passive:false});
-
-document.getElementById('roomItems').innerHTML=Object.values(products).map(p=>`
-  <div style="display:flex;gap:10px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)">
-    <div style="font-size:28px">${p.icon}</div>
-    <div style="flex:1"><strong style="font-size:12px">${p.name}</strong><p class="muted">${money(p.price)}</p></div>
-    <button onclick="selectedFurniture='${p.id}';toast('${p.name} 선택');">선택</button>
-  </div>
-`).join('');
-
 renderProducts();
 renderCart();
 renderWishlist();
 updateCounts();
-drawRoom();
-window.addEventListener('resize',drawRoom);
+</script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+const canvas=document.querySelector('#view'),status=document.querySelector('#status');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
+const scene=new THREE.Scene();scene.background=new THREE.Color('#e8e7df');const camera=new THREE.PerspectiveCamera(42,1,.1,100);camera.position.set(7.8,6.5,9.5);
+const controls=new OrbitControls(camera,canvas);controls.target.set(0,1,0);controls.enableDamping=true;controls.maxPolarAngle=Math.PI*.48;controls.minDistance=4.5;controls.maxDistance=18;
+scene.add(new THREE.HemisphereLight(0xffffff,0xb9b8a9,2));const light=new THREE.DirectionalLight(0xfff4df,3);light.position.set(-4,9,6);light.castShadow=true;light.shadow.mapSize.set(2048,2048);scene.add(light);
+const material=(c,r=.8)=>new THREE.MeshStandardMaterial({color:c,roughness:r});
+const mats={wall:material('#f5f3eb'),side:material('#e2e1d7'),floor:material('#dedbcf'),white:material('#fff'),sage:material('#c7cbbb'),sage2:material('#adb5a2'),cream:material('#e9e0d1'),wood:material('#a88e70'),wood2:material('#c4ad8f'),green:material('#87977d'),pot:material('#c5b19a')};
+function box(parent,n,w,h,d,m,x,y,z){let o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.name=n;o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
+function cyl(parent,n,rt,rb,h,m,x,y,z){let o=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,32),m);o.name=n;o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
+function sphere(parent,n,sx,sy,sz,m,x,y,z){let o=new THREE.Mesh(new THREE.SphereGeometry(1,24,16),m);o.name=n;o.scale.set(sx,sy,sz);o.position.set(x,y,z);o.castShadow=true;parent.add(o);return o}
+// Open-front room with real perspective and depth.
+box(scene,'floor',8,.16,6,mats.floor,0,-.08,0);box(scene,'back wall',8,4,.16,mats.wall,0,2,-3);box(scene,'left wall',.16,4,6,mats.side,-4,2,0);
+for(let z=-2.5;z<2.8;z+=.65)box(scene,'floor seam',7.96,.008,.012,material('#d1cec3'),0,.006,z);
+const win=new THREE.Group();win.position.set(-2.55,2.55,-2.89);scene.add(win);box(win,'window glass',1.65,1.65,.025,material('#dce8e5',.35),0,0,0);
+for(const [x,y,w,h] of [[-.86,0,.1,1.85],[.86,0,.1,1.85],[0,.86,1.82,.1],[0,-.86,1.82,.1],[0,0,.07,1.65]])box(win,'window frame',w,h,.08,mats.white,x,y,.04);
+box(win,'window cross',1.65,.07,.08,mats.white,0,0,.04);
+function art(x,y,w,h,cols,angle){const g=new THREE.Group();g.position.set(x,y,-2.88);g.rotation.z=angle;scene.add(g);box(g,'picture frame',w,h,.08,mats.white,0,0,0);box(g,'picture canvas',w-.12,h-.12,.025,material(cols[0]),0,0,.05);let stripe=box(g,'art stripe',w-.18,.28,.03,material(cols[1]),0,.12,.075);stripe.rotation.z=-.58;let stripe2=box(g,'art stripe',w-.18,.24,.03,material(cols[2]),0,-.34,.076);stripe2.rotation.z=-.58}
+art(.75,2.75,1.15,1.5,['#d9d9c9','#aab49f','#e7d8c5'],-.02);art(2.05,2.65,.86,1.2,['#e6dfd1','#a7b09d','#d1d1c3'],.035);
+const rug=new THREE.Mesh(new THREE.CylinderGeometry(2.05,2.05,.035,64),material('#d1cec3'));rug.scale.z=.58;rug.position.set(.2,.025,.75);rug.receiveShadow=true;scene.add(rug);const ring=new THREE.Mesh(new THREE.TorusGeometry(1.88,.012,8,80),material('#bcb9ae'));ring.rotation.x=Math.PI/2;ring.scale.set(1,.58,1);ring.position.set(.2,.048,.75);scene.add(ring);
+const sofa=new THREE.Group();sofa.position.set(.15,0,-1.7);scene.add(sofa);box(sofa,'sofa back',2.8,.95,.58,mats.sage,0,.92,0);box(sofa,'sofa seat',3,.34,.92,material('#d7d8ce'),0,.48,.3);box(sofa,'arm',.32,.72,.82,mats.sage2,-1.34,.66,.28);box(sofa,'arm',.32,.72,.82,mats.sage2,1.34,.66,.28);box(sofa,'cushion',.55,.48,.16,mats.cream,-.68,.88,.29).rotation.z=-.12;box(sofa,'cushion',.55,.48,.16,mats.sage2,.62,.88,.29).rotation.z=.1;
+const chair=new THREE.Group();chair.name='chair';chair.userData.draggable=true; // removed from the 3D scene per user request
+const table=new THREE.Group();table.name='table';table.userData.draggable=true;table.position.set(.25,0,1.05);table.scale.set(1.22,1.22,1.22);scene.add(table);
+// Living-room low table modeled from the supplied reference: 100 x 50 cm top, 42 cm total height.
+// Rounded rectangular top, thin 2 cm slab, and four tapered, slightly splayed wooden legs.
+const topShape=new THREE.Shape();const tw=1.0,td=.5,cr=.095;
+topShape.moveTo(-tw/2+cr,-td/2);topShape.lineTo(tw/2-cr,-td/2);topShape.quadraticCurveTo(tw/2,-td/2,tw/2,-td/2+cr);topShape.lineTo(tw/2,td/2-cr);topShape.quadraticCurveTo(tw/2,td/2,tw/2-cr,td/2);topShape.lineTo(-tw/2+cr,td/2);topShape.quadraticCurveTo(-tw/2,td/2,-tw/2,td/2-cr);topShape.lineTo(-tw/2,-td/2+cr);topShape.quadraticCurveTo(-tw/2,-td/2,-tw/2+cr,-td/2);
+const topGeo=new THREE.ExtrudeGeometry(topShape,{depth:.04,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.012,bevelThickness:.008,curveSegments:8});topGeo.rotateX(-Math.PI/2);topGeo.translate(0,.42,0);const topMesh=new THREE.Mesh(topGeo,material('#f2f0e9',.48));topMesh.name='거실 좌탁 상판';topMesh.castShadow=true;topMesh.receiveShadow=true;table.add(topMesh);
+function taperedLeg(parent,name,start,end){const a=new THREE.Vector3(...start),b=new THREE.Vector3(...end),dir=new THREE.Vector3().subVectors(b,a);const mesh=new THREE.Mesh(new THREE.CylinderGeometry(.035,.055,dir.length(),16),mats.wood);mesh.name=name;mesh.position.copy(a).add(b).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh)}
+for(const x of [-.37,.37])for(const z of [-.17,.17])taperedLeg(table,'거실 좌탁 원목 다리',[x,.40,z],[x+Math.sign(x)*.075,.025,z+Math.sign(z)*.045]);
+// Product-inspired ring vase: 22 cm wide x 23.5 cm tall, with a central opening.
+const vase=new THREE.Group();vase.name='vase';vase.userData.draggable=true;vase.position.set(1.25,0,-.72);vase.scale.setScalar(.72);scene.add(vase);
+const ceramic=material('#d9ddd9',.38);
+const silhouette=new THREE.Shape();
+silhouette.moveTo(-.72,.02);
+silhouette.bezierCurveTo(-1.12,.22,-1.10,.68,-1.00,1.03);
+silhouette.bezierCurveTo(-.91,1.38,-.68,1.57,-.36,1.78);
+silhouette.bezierCurveTo(-.22,1.87,-.17,2.00,-.17,2.15);
+silhouette.quadraticCurveTo(-.17,2.22,-.09,2.22);
+silhouette.lineTo(.09,2.22);
+silhouette.quadraticCurveTo(.17,2.22,.17,2.15);
+silhouette.bezierCurveTo(.17,2.00,.22,1.87,.36,1.78);
+silhouette.bezierCurveTo(.68,1.57,.91,1.38,1.00,1.03);
+silhouette.bezierCurveTo(1.10,.68,1.12,.22,.72,.02);
+silhouette.quadraticCurveTo(0,-.03,-.72,.02);
+const opening=new THREE.Path();opening.absellipse(0,.88,.48,.48,0,Math.PI*2,true,0);silhouette.holes.push(opening);
+const vaseGeo=new THREE.ExtrudeGeometry(silhouette,{depth:.16,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.035,bevelThickness:.035,curveSegments:32});
+vaseGeo.computeVertexNormals();
+const vaseBody=new THREE.Mesh(vaseGeo,ceramic);vaseBody.position.y=.05;vaseBody.castShadow=true;vaseBody.receiveShadow=true;vase.add(vaseBody);
+// Small narrow neck opening, matching the reference silhouette.
+const neckRim=new THREE.Mesh(new THREE.TorusGeometry(.135,.026,12,36),ceramic);neckRim.rotation.x=Math.PI/2;neckRim.position.set(0,2.24,.08);neckRim.castShadow=true;vase.add(neckRim);
+// A small airy bouquet: stems emerge from the open neck, with soft spring flowers.
+const bouquet=new THREE.Group();bouquet.name='flowers';vase.add(bouquet);
+const stemMat=material('#718768',.82), leafMat=material('#879b79',.72);
+function flowerStem(x,z,h,lean){const start=new THREE.Vector3(x,2.22,z),end=new THREE.Vector3(x+lean,2.22+h,z);const dir=end.clone().sub(start);const stem=new THREE.Mesh(new THREE.CylinderGeometry(.018,.024,dir.length(),8),stemMat);stem.position.copy(start).add(end).multiplyScalar(.5);stem.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.clone().normalize());stem.castShadow=true;bouquet.add(stem);
+const leaf=sphere(bouquet,'flower leaf',.055,.19,.035,leafMat,x+lean*.32,2.22+h*.38,z);leaf.rotation.z=-.55+lean;
+const head=new THREE.Group();head.position.copy(end);bouquet.add(head);const colors=['#f1e5d2','#e8b9a8','#f5f0e5','#d9b9c5'];const petalMat=material(colors[Math.floor((Math.abs(x*17+z*13)*10)%colors.length)],.55);
+for(let i=0;i<5;i++){const a=i*Math.PI*2/5;const petal=sphere(head,'soft flower petal',.075,.115,.055,petalMat,Math.cos(a)*.075,.015,Math.sin(a)*.075);petal.rotation.z=-Math.cos(a)*.25;}sphere(head,'flower center',.045,.045,.045,material('#c7a56a'),0,.025,0);
+}
+flowerStem(-.12,-.02,.92,-.13);flowerStem(.04,.045,1.18,.08);flowerStem(.15,-.015,.98,.17);flowerStem(-.23,.035,.78,-.2);flowerStem(.24,.04,.82,.12);
+
+
+// Yellow beanbag chair inspired by the user's reference photo: soft rounded body,
+// deep recessed seat, raised side/back bolsters, and a small fabric carry loop.
+const beanbag=new THREE.Group();beanbag.name='beanbag';beanbag.userData.draggable=true;beanbag.position.set(-1.15,0,-.25);scene.add(beanbag);
+const yellow=material('#e6c83d',.96), yellowLight=material('#f0d956',.98), yellowShade=material('#c6a92c',1);
+function softBlob(parent,name,sx,sy,sz,mat,x,y,z,rot=0){
+ const m=new THREE.Mesh(new THREE.SphereGeometry(1,32,24),mat);m.name=name;m.scale.set(sx,sy,sz);m.position.set(x,y,z);m.rotation.z=rot;m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;
+}
+// Wide, low, cushion-like base and plump surrounding back/arms
+softBlob(beanbag,'beanbag base',.82,.28,.68,yellowShade,0,.28,0);
+softBlob(beanbag,'beanbag front cushion',.78,.46,.57,yellowLight,0,.48,.13);
+softBlob(beanbag,'beanbag left bolster',.28,.66,.59,yellow,-.56,.64,-.03,-.18);
+softBlob(beanbag,'beanbag right bolster',.28,.66,.59,yellow,.56,.64,-.03,.18);
+softBlob(beanbag,'beanbag back cushion',.62,.73,.32,yellowLight,0,.75,-.37);
+softBlob(beanbag,'beanbag seat depression',.47,.13,.39,yellowShade,0,.69,-.02);
+// Soft inner seat surface, brighter than the recessed seam to read as a hollow seat
+softBlob(beanbag,'beanbag inner seat',.42,.10,.34,yellowLight,0,.72,.015);
+// small fabric loop at the top/back
+const handleMat=material('#c8ac2e',.98);
+const handle=new THREE.Mesh(new THREE.TorusGeometry(.105,.035,10,24,Math.PI),handleMat);
+handle.name='fabric carry handle';handle.position.set(0,1.43,-.48);handle.rotation.set(Math.PI/2,0,0);handle.scale.set(1,1.35,1);handle.castShadow=true;beanbag.add(handle);
+
+const pid={vase:'vase',table:'table',beanbag:'sofa'};const openProd=k=>{if(typeof window.openDetail==='function')window.openDetail(pid[k])};
+const ray=new THREE.Raycaster(),pt=new THREE.Vector2();let selected=null,drag=false,plane=new THREE.Plane(new THREE.Vector3(0,1,0),0),offset=new THREE.Vector3(),hit=new THREE.Vector3();
+function pointer(e){const r=canvas.getBoundingClientRect();pt.x=(e.clientX-r.left)/r.width*2-1;pt.y=-(e.clientY-r.top)/r.height*2+1;ray.setFromCamera(pt,camera)}
+function findGroup(o){while(o){if(o.userData?.draggable)return o;o=o.parent}return null}
+function pick(e){pointer(e);return ray.intersectObjects([table,vase,beanbag],true).map(h=>findGroup(h.object)).find(Boolean)||null}
+const rotationSlider=document.querySelector('#rotationSlider'),rotationValue=document.querySelector('#rotationValue'),rotateHint=document.querySelector('#rotateHint');
+function syncRotation(){const deg=selected?Math.round(THREE.MathUtils.euclideanModulo(selected.rotation.y,Math.PI*2)*180/Math.PI):0;rotationSlider.value=deg;rotationValue.textContent=deg+'°';rotateHint.textContent=selected?'선택 중: '+({table:'거실 좌탁',vase:'화병',beanbag:'옐로우 빈백 소파'}[selected.name])+' · 360° 회전 가능':'먼저 3D 화면에서 상품을 클릭하세요.'}
+function setRotation(deg){if(!selected){status.textContent='먼저 회전할 상품을 클릭해 주세요.';return}selected.rotation.y=THREE.MathUtils.degToRad(((deg%360)+360)%360);syncRotation();status.textContent=({table:'거실 좌탁',vase:'화병',beanbag:'옐로우 빈백 소파'}[selected.name])+' 회전: '+rotationValue.textContent}
+document.querySelector('#rotLeft').onclick=()=>setRotation((Number(rotationSlider.value)-15+360)%360);document.querySelector('#rotRight').onclick=()=>setRotation((Number(rotationSlider.value)+15)%360);rotationSlider.addEventListener('input',()=>setRotation(Number(rotationSlider.value)));
+canvas.addEventListener('pointerdown',e=>{if(e.button!==0)return;const g=pick(e);if(!g)return;selected=g;syncRotation();drag=true;controls.enabled=false;plane.set(new THREE.Vector3(0,1,0),-g.position.y);pointer(e);if(ray.ray.intersectPlane(plane,hit))offset.copy(g.position).sub(hit);canvas.setPointerCapture(e.pointerId);status.textContent='선택됨: '+({chair:'의자',table:'거실 좌탁',vase:'화병',beanbag:'옐로우 빈백 소파'}[g.name])+' · 드래그해서 이동'});
+canvas.addEventListener('pointermove',e=>{if(!drag||!selected)return;pointer(e);if(ray.ray.intersectPlane(plane,hit)){selected.position.x=THREE.MathUtils.clamp(hit.x+offset.x,-3.55,3.55);selected.position.z=THREE.MathUtils.clamp(hit.z+offset.z,-2.55,2.55)}});
+function endDrag(){drag=false;controls.enabled=true}canvas.addEventListener('pointerup',endDrag);canvas.addEventListener('pointercancel',endDrag);canvas.addEventListener('dblclick',e=>{const g=pick(e);if(g)openProd(g.name)});
+function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}window.addEventListener('resize',resize);resize();
+function reset(){table.position.set(.25,0,1.05);vase.position.set(1.25,0,-.72);beanbag.position.set(-1.15,0,-.25);table.rotation.set(0,0,0);vase.rotation.set(0,0,0);beanbag.rotation.set(0,0,0);selected=null;syncRotation();camera.position.set(7.8,6.5,9.5);controls.target.set(0,1,0);controls.update();status.textContent='3D 공간 준비 완료 · 가구를 클릭해 선택'}
+document.querySelector('#reset').onclick=reset;document.querySelector('#home').onclick=()=>{camera.position.set(7.8,6.5,9.5);controls.target.set(0,1,0);controls.update()};document.querySelector('#zin').onclick=()=>camera.position.sub(controls.target).multiplyScalar(.88).add(controls.target);document.querySelector('#zout').onclick=()=>camera.position.sub(controls.target).multiplyScalar(1.12).add(controls.target);document.querySelectorAll('[data-product]').forEach(b=>b.onclick=()=>openProd(b.dataset.product));
+status.textContent='3D 공간 준비 완료 · 가구를 클릭해 선택';syncRotation();function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)}animate();
+
 </script>
 </body>
 </html>
